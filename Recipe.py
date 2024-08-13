@@ -1,7 +1,7 @@
 import pandas as pd
 import random
 
-recipe_df = pd.read_csv("C:/Users/Seunghwan/Desktop/데이터/preprocessed_kr_recipe.csv")
+recipe_df = pd.read_csv("C:/Users/hj/Desktop/FINAL/YHJ/final-project/labels_translation/preprocessed_kr_recipe.csv")
 recipe_df = recipe_df[['요리명', '재료리스트', '조회수', '추천수', '스크랩수',
                        '요리타입', '음식분위기', '재료타입', '음식타입', '몇인분',
                        '요리난이도', '요리시간', '레시피일련번호']]
