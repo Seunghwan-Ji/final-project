@@ -449,3 +449,177 @@ def search_result(recipe_name, call_from_history_menu=False):
         </p>
     </body>
     """, unsafe_allow_html=True)
+
+# 데이터프레임을 출력하고 체크박스를 추가하는 함수
+def display_recipes_with_checkboxes(df):
+    if not df.empty:
+        gb = GridOptionsBuilder.from_dataframe(df)
+        gb.configure_selection('single', use_checkbox=True)
+        grid_options = gb.build()
+
+        grid_response = AgGrid(
+            df,
+            gridOptions=grid_options,
+            update_mode=GridUpdateMode.SELECTION_CHANGED,
+            height=300,
+            width='100%'
+        )
+
+        # st.write("Grid Response:", grid_response)  # 디버깅용 출력
+        # st.write("Grid Response Content:", grid_response.__dict__)  # 객체의 모든 속성 출력
+        
+        # rowData를 직접 접근
+        row_data = grid_response['data']
+        # st.write("Row Data:", row_data)
+        selected_rows = grid_response['selected_rows']
+        url = None
+        
+        if selected_rows is not None:
+            # st.write(selected_rows)
+            # st.write(selected_rows['레시피일련번호'])
+            url = get_valid_recipe_url(selected_rows['요리명'])
+            recipe_name = selected_rows['요리명']
+            recipe_name_str = str(recipe_name.iloc[0])
+        else:
+            st.write('아직 선택이 안됫습니다.')
+        if url:
+            try:
+                info = get_recipe_info(url)
+                if info:
+                    test_photo = info['photo_url']
+                    test_ingredients = info['ingredients']
+                    test_ingredients_str = str(test_ingredients).replace('\n', '<br>')
+                    test_video = info['video_url']
+                    test_text = info['steps']
+                    
+                    # 제목
+                    # st.write(recipe_name.iloc[0])
+                    st.markdown(f"""
+                    <style>
+                        .recipe_name {{
+                            font-size: 20px;
+                            font-family: 'Fira Code';
+                            font-weight: bold;
+                            color: #727421;
+                            border-radius: 8px;
+                            background-color: #fdffeb;
+                            border: 10px double #fdffb2;
+                            text-shadow: 3px  3px 0 #fff;
+                            text-align: center;
+                            padding: 4px 0px 4px 0px;
+                            margin: 1px 0px 10px 0px;
+                            }}
+                    </style>
+                    <p class=recipe_name>
+                        {recipe_name_str}
+                    </p>
+                                    """, unsafe_allow_html=True)
+                    
+                    # 사진
+                    st.image(test_photo)
+                    
+                    # 재료 리스트
+                    # st.write(f'재료 : {test_ingredients}')
+                    
+                    st.markdown(f"""
+                    <style>
+                        .test_ingredients_str {{
+                            font-size: 20px;
+                            font-family: 'Fira Code';
+                            font-weight: bold;
+                            color: #727421;
+                            border-radius: 8px;
+                            background-color: #fdffeb;
+                            border: 5px dotted  #fdffb2;
+                            text-shadow: 3px  3px 0 #fff;
+                            text-align: center;
+                            padding: 4px 0px 4px 0px;
+                            margin: 1px 0px 200px 0px;
+                            }}
+                    </style>
+                    <p class=test_ingredients_str>
+                        {test_ingredients_str}
+                    </p>
+                            """, unsafe_allow_html=True)
+                    
+                    # 영상
+                    st.video(test_video)
+                    
+                    # 설명부분
+                    # for step in test_text:
+                    #     st.write(step['text'])
+                    #     st.image(step['image_url'])
+                    
+                    # HTML 문자열 생성
+                    html_steps = ""
+                    for step in test_text:
+                        if step["image_url"]:
+                            html_steps += f"<img src='{step['image_url']}' class=step-image /> <br>"
+                        if step["text"]:
+                            text_str = "<br>".join(step['text'].split("\n"))
+                            html_steps += f"<p class=cooking1>{text_str}</p>"
+                        
+                    # Tips
+                    tips = info.get('tips', '')  # tips를 가져오는 코드
+                    st.markdown(f"""
+                    <head>
+                        <style>
+                            .cooking1 {{
+                                font-size: 20px;
+                                color: #8887f7;
+                                font-family: 'Fira Code', monospace;
+                                font-weight: bold;
+                                border-radius: 8px;
+                                background-color: #fae5fd;
+                                border: 5px dotted #fdffb2;
+                                text-shadow: 3px 3px 0 #fff;
+                                text-align: center;
+                                padding: 5px 5px 5px 5px;
+                                margin: 10px 0 200px 0;
+                            }}
+                            .step-image {{
+                                width: 100%;
+                                max-width: 600px;
+                                margin: 100px 0px 0px 0px;
+                            }}
+                            .tips-section {{
+                                font-size: 20px;
+                                color: #727421;
+                                font-family: 'Fira Code';
+                                font-weight: bold;
+                                margin-top: 30px;
+                            }}
+                            .tips {{
+                                font-size: 30px;
+                                font-family: 'Fira Code';
+                                font-weight: bold;
+                                color: #727421;
+                                border-radius: 8px;
+                                background-color: #fdffeb;
+                                border: 10px double #fdffb2;
+                                text-shadow: 3px  3px 0 #fff;
+                                text-align: center;
+                                padding: 4px 0px 4px 0px;
+                                margin: 200px 0px 20px 0px;
+                            }}
+                        </style>
+                    </head>
+                    <body>
+                        <div>
+                            {html_steps}
+                        </div>
+                            <h3 class = tips>팁/주의사항</h3>
+                        <p class='tips-section'>
+                        {tips}
+                        </p>
+                    </body>
+                    """, unsafe_allow_html=True)                    
+                else:
+                    st.write('유효한 링크가 없어요')
+            except Exception as e:
+                st.write(f'정보를 가져오는 중 오류가 발생했습니다: {e}')
+        else:
+            st.write('URL이 설정되지 않았습니다.')
+    else:
+        st.write("DataFrame is empty!")
+        
