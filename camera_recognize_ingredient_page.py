@@ -126,6 +126,7 @@ def show_camera_recognize_ingredient():
                 <style>
                     .text {{
                             font-size: 29px;
+                            color: #f481512;
                             font-family: 'Fira Code';
                             font-weight: bold;
                             color: #727421;

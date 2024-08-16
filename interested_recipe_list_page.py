@@ -23,7 +23,7 @@ def show_interested_recipe_list():
             }
         </style>
     """, unsafe_allow_html=True)
-    
+
     st.title("관심 요리 목록")
         
     # 관심 요리 목록이 비어있는지 확인

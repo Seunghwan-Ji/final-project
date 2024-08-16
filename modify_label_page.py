@@ -85,7 +85,7 @@ def modify_label_page():
             <style>
                 .add_ingredients {
                     font-size: 25px;
-                    color: #727421;
+                    color: #4f704b;
                     font-weight: bold;
                     text-shadow: 2px  2px 0 #fff;
                     font-family: 'Fira Code';
@@ -103,7 +103,7 @@ def modify_label_page():
                 <style>
                     .add_ingredients {
                         font-size: 25px;
-                        color: #727421;
+                        color: #4f704b;
                         font-weight: bold;
                         text-shadow: 2px  2px 0 #fff;
                         font-family: 'Fira Code';
@@ -123,7 +123,7 @@ def modify_label_page():
         <style>
             .st-ct.st-bn.st-cu.st-bq.st-cx.st-cy.st-cz.st-d0.st-d1.st-d2.st-d3.st-d4.st-eu.st-d6.st-ar.st-ak.st-an.st-al.st-am.st-cd.st-ck.st-cl.st-cm.st-cn.st-co.st-d7.st-d8.st-d9.st-da.st-db.st-ev.st-ew.st-dc {
                 border: 5px dotted #fef8ad;
-                height: 50px;
+                height: 200px;
                 border-radius: 10px;
                 padding: 10px 10px 10px 10px;
                 font-size: 30px;
@@ -133,7 +133,7 @@ def modify_label_page():
             }
             .st-ct.st-bn.st-cu.st-bq.st-cx.st-cy.st-cz.st-d0.st-d1.st-d2.st-d3.st-d4.st-eu.st-d6.st-ar.st-ak.st-an.st-al.st-am.st-cd.st-ck.st-cl.st-cm.st-cn.st-co.st-f7.st-f8.st-f9.st-fa.st-db.st-ev.st-ew.st-dc {
                 border: 5px dotted #f2a653;
-                height: 50px;
+                height: 200px;
                 border-radius: 10px;
                 padding: 10px 10px 10px 10px;
                 font-size: 30px;

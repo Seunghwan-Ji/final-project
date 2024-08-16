@@ -14,7 +14,8 @@ def search_recipe_page():
             color: #727421;
             font-size: 25px;
             font-weight: bold;
-            width: 100%;
+            width: 150px;
+            height: 50px;
             border: 7px outset #fdffb2;
         }
         
@@ -22,16 +23,35 @@ def search_recipe_page():
             background-color: #ffffD3;
             border: 7px outset #FFFF41;
         }
+        .st-emotion-cache-1vt4y43.ef3psqc12 {
+            background-color: #fdffeb;
+            color: #727421;
+            font-size: 25px;
+            font-weight: bold;
+            width: 150px;
+            height: 50px;
+            border: 7px outset #fdffb2;
+        }
+        .st-emotion-cache-1vt4y43.ef3psqc12:hover {
+            background-color: #ffffD3;
+            border: 7px outset #FFFF41;
+        }
+        .st-emotion-cache-1cg5da1.ef3psqc12 {
+            background-color: #fdffeb;
+            color: #727421;
+            font-size: 25px;
+            font-weight: bold;
+            width: 150px;
+            height: 50px;
+            border: 7px outset #fdffb2;
+        }
+        .st-emotion-cache-1cg5da1.ef3psqc12:hover {
+            background-color: #ffffD3;
+            border: 7px outset #FFFF41;
+        }
         
-
     </style>
     """, unsafe_allow_html=True)
-    if st.session_state.recipe_df_selected_number is None:
-        if col1.button("뒤로 가기"):
-            st.session_state.search_recipe_page = False
-            st.session_state.modify_label_page = True
-            st.session_state.recipe_df_sort_by = None
-            st.experimental_rerun()
 
     st.image("app_gui/user.png", width=650)
     
@@ -76,37 +96,65 @@ def search_recipe_page():
     # Streamlit 체크박스 생성
     st.session_state.include_all_ingredients = st.checkbox("모든 재료를 포함한 레시피 보기")
 
-    col1, col2, col3 = st.columns([5, 5, 5])
+    # 열 정의
+    if not st.session_state.include_all_ingredients:
+        col1, col2, col3, col4 = st.columns([5, 5, 5, 5])
+        with col1:
+            if st.button("재료 포함순", help="재료가 많이 포함된 순서"):
+                st.session_state.recipe_df_sort_by = (None, "재료가 많이 포함된순")
+        
+        with col2:
+            if st.button("추천순", help="추천수가 많은 순서"):
+                st.session_state.recipe_df_sort_by = ("추천수", "추천순")
+                
+        with col3:
+            if st.button("조회순", help="조회수가 많은 순서"):
+                st.session_state.recipe_df_sort_by = ("조회수", "조회순")
+        
+        with col4:
+            if st.button("스크랩순", help="스크랩수가 많은 순서"):
+                st.session_state.recipe_df_sort_by = ("스크랩수", "스크랩순")
+    else:
+        if st.session_state.recipe_df_sort_by == (None, "재료가 많이 포함된순"):
+            st.session_state.recipe_df_sort_by = ("추천수", "추천순") # 이 경우엔 추천순을 기본값으로 적용
 
-    # 버튼 클릭 처리
-    with col1:
-        if st.button("추천순"):
-            st.session_state.recipe_df_sort_by = ("추천수", "추천순")
-            
-    with col2:
-        if st.button("조회순"):
-            st.session_state.recipe_df_sort_by = ("조회수", "조회순")
-    
-    with col3:
-        if st.button("스크랩순"):
-            st.session_state.recipe_df_sort_by = ("스크랩수", "스크랩순")
+        col1, col2, col3 = st.columns([5, 5, 5])
+        with col1:
+            if st.button("추천순", help="추천수가 많은 순서"):
+                st.session_state.recipe_df_sort_by = ("추천수", "추천순")
+
+        # 기존 버튼들
+        with col2:
+            if st.button("조회순", help="조회수가 많은 순서"):
+                st.session_state.recipe_df_sort_by = ("조회수", "조회순")
+                
+        with col3:
+            if st.button("스크랩순", help="스크랩수가 많은 순서"):
+                st.session_state.recipe_df_sort_by = ("스크랩수", "스크랩순")
 
     if st.session_state.recipe_df_sort_by:
         check_exist_cookable_recipe()
-    
 
+    if st.session_state.recipe_df_selected_number is None:
+        if col1.button("뒤로 가기"):
+            st.session_state.search_recipe_page = False
+            st.session_state.modify_label_page = True
+            st.session_state.recipe_df_sort_by = None
+            st.experimental_rerun()
+            
 
 def check_exist_cookable_recipe():
     if st.session_state.include_all_ingredients:
-        # 모든 재료가 포함된 레시피 추천
+        # 모든 재료가 포함된 행 추출
         recipe_results = search_all_include(st.session_state.detected_label_set)
     else:
-        # 인식한 식재료 중 하나라도 포함된 레시피 추천
-        recipe_results = search_include_at_least_one(st.session_state.detected_label_set)
+        # 재료가 많이 포함된 순으로 행 추출
+        recipe_results = search_by_most_ingredients(st.session_state.detected_label_set)
     
     if recipe_results.shape[0] > 0:
-        recipe_results = recipe_results.sort_values(by=st.session_state.recipe_df_sort_by[0], ascending=False)
-        # recipe_results = recipe_results.set_index('요리명') # '요리명' 열을 인덱스로 전환
+        if st.session_state.recipe_df_sort_by != (None, "재료가 많이 포함된순"):
+            recipe_results = recipe_results.sort_values(by=st.session_state.recipe_df_sort_by[0], ascending=False)
+            # recipe_results = recipe_results.set_index('요리명') # '요리명' 열을 인덱스로 전환
 
         st.markdown(f"""
             <style>
@@ -119,7 +167,7 @@ def check_exist_cookable_recipe():
                     border-radius: 8px;
                     margin: 50px 0px 10px 0px;
                     border: 2px outset #fdffb2;
-                    width: 300px;
+                    width: 500px;
                     }}
             </style>
             <p class=recipe_subheader>
@@ -133,9 +181,6 @@ def check_exist_cookable_recipe():
                         }
                     </style>
                     """,  unsafe_allow_html=True)
-        
-        # st.write(recipe_results)
-        # st.session_state.exist_cookable_recipe = True
 
         # st_aggrid를 사용하여 데이터프레임을 표시하고 행을 선택할 수 있도록 설정
         gb = GridOptionsBuilder.from_dataframe(recipe_results)
@@ -166,12 +211,12 @@ def check_exist_cookable_recipe():
     else:
         st.write("보유하신 재료로 조리 가능한 레시피가 없습니다.")
 
-def search_recipe(recipe_name=None, random_recipe=False):
+def search_recipe(recipe_name=None, random_recipe=False): 
     clicked = False
     if recipe_name:
         st.image("app_gui/random_recipe_icon.png")
 
-        col1, col2 = st.columns([4, 6])
+        col1, col2 = st.columns([3, 7])
         if not random_recipe:
             if col1.button("뒤로 가기"):
                 st.session_state.search_recipe_page = False
@@ -339,6 +384,7 @@ def search_result(recipe_name, call_from_history_menu=False):
             요리 영상
         </p>
     """, unsafe_allow_html=True)
+
     if st.session_state.searched_recipe_info["video_url"]:
         st.video(st.session_state.searched_recipe_info["video_url"])
     else:
@@ -430,3 +476,194 @@ def search_result(recipe_name, call_from_history_menu=False):
         </p>
     </body>
     """, unsafe_allow_html=True)
+
+
+# 데이터프레임을 출력하고 체크박스를 추가하는 함수
+def display_recipes_with_checkboxes(df):
+    st.markdown(f"""
+    <style>
+        .header {{
+            font-size: 25px;
+            background-color: #fdffeb;
+            color: #727421;
+            text-align: center;
+            border: 5px dotted #fdffb2;
+            text-shadow: 3px  0px 0 #fff;
+            border-radius: 8px;
+            width: auto;
+            }}
+    </style>
+    <p class=header>
+        아래의 레시피 중 하나를 체크해주세요
+    </p>""", unsafe_allow_html=True)
+    
+    if not df.empty:
+        gb = GridOptionsBuilder.from_dataframe(df)
+        gb.configure_selection('single', use_checkbox=True)
+        grid_options = gb.build()
+
+        grid_response = AgGrid(
+            df,
+            gridOptions=grid_options,
+            update_mode=GridUpdateMode.SELECTION_CHANGED,
+            height=300,
+            width='100%'
+        )
+
+        # st.write("Grid Response:", grid_response)  # 디버깅용 출력
+        # st.write("Grid Response Content:", grid_response.__dict__)  # 객체의 모든 속성 출력
+        
+        # rowData를 직접 접근
+        row_data = grid_response['data']
+        # st.write("Row Data:", row_data)
+        selected_rows = grid_response['selected_rows']
+        url = None
+        
+        if selected_rows is not None:
+            # st.write(selected_rows)
+            # st.write(selected_rows['레시피일련번호'])
+            url = get_valid_recipe_url(selected_rows['요리명'])
+            recipe_name = selected_rows['요리명']
+            recipe_name_str = str(recipe_name.iloc[0])
+        # else:
+        #     st.write('아직 선택이 안됫습니다.')
+        if url:
+            try:
+                info = get_recipe_info(url)
+                if info:
+                    test_photo = info['photo_url']
+                    test_ingredients = info['ingredients']
+                    test_ingredients_str = str(test_ingredients).replace('\n', '<br>')
+                    test_video = info['video_url']
+                    test_text = info['steps']
+                    
+                    # 제목
+                    # st.write(recipe_name.iloc[0])
+                    st.markdown(f"""
+                    <style>
+                        .recipe_name {{
+                            font-size: 20px;
+                            font-family: 'Fira Code';
+                            font-weight: bold;
+                            color: #727421;
+                            border-radius: 8px;
+                            background-color: #fdffeb;
+                            border: 10px double #ffd655;
+                            text-shadow: 3px  3px 0 #fff;
+                            text-align: center;
+                            padding: 4px 0px 4px 0px;
+                            margin: 1px 0px 10px 0px;
+                            }}
+                    </style>
+                    <p class=recipe_name>
+                        {recipe_name_str}
+                    </p>
+                                    """, unsafe_allow_html=True)
+                    
+                    # 사진
+                    st.image(test_photo)
+                    
+                    # 재료 리스트
+                    # st.write(f'재료 : {test_ingredients}')
+                    
+                    st.markdown(f"""
+                    <style>
+                        .test_ingredients_str {{
+                            font-size: 20px;
+                            font-family: 'Fira Code';
+                            font-weight: bold;
+                            color: #727421;
+                            border-radius: 8px;
+                            background-color: #fdffeb;
+                            border: 5px dotted  #fdffb2;
+                            text-shadow: 3px  3px 0 #fff;
+                            text-align: center;
+                            padding: 4px 0px 4px 0px;
+                            margin: 1px 0px 200px 0px;
+                            }}
+                    </style>
+                    <p class=test_ingredients_str>
+                        {test_ingredients_str}
+                    </p>
+                            """, unsafe_allow_html=True)
+                    
+                    # 영상
+                    st.video(test_video)
+                    
+                    # 설명부분
+                    # for step in test_text:
+                    #     st.write(step['text'])
+                    #     st.image(step['image_url'])
+                    
+                    # HTML 문자열 생성
+                    html_steps = ""
+                    for step in test_text:
+                        if step["image_url"]:
+                            html_steps += f"<img src='{step['image_url']}' class=step-image /> <br>"
+                        if step["text"]:
+                            text_str = "<br>".join(step['text'].split("\n"))
+                            html_steps += f"<p class=cooking1>{text_str}</p>"
+                        
+                    # Tips
+                    tips = info.get('tips', '')  # tips를 가져오는 코드
+                    st.markdown(f"""
+                    <head>
+                        <style>
+                            .cooking1 {{
+                                font-size: 20px;
+                                color: #727421;
+                                font-family: 'Fira Code', monospace;
+                                font-weight: bold;
+                                border-radius: 8px;
+                                background-color: #fdffeb;
+                                border: 5px dotted #fdffb2;
+                                text-shadow: 3px 3px 0 #fff;
+                                text-align: center;
+                                padding: 5px 5px 5px 5px;
+                                margin: 10px 0 200px 0;
+                            }}
+                            .step-image {{
+                                width: 100%;
+                                max-width: 600px;
+                                margin: 100px 0px 0px 0px;
+                            }}
+                            .tips-section {{
+                                font-size: 20px;
+                                color: #727421;
+                                font-family: 'Fira Code';
+                                font-weight: bold;
+                                margin-top: 30px;
+                            }}
+                            .tips {{
+                                font-size: 30px;
+                                font-family: 'Fira Code';
+                                font-weight: bold;
+                                color: #727421;
+                                border-radius: 8px;
+                                background-color: #fdffeb;
+                                border: 10px double #fdffb2;
+                                text-shadow: 3px  3px 0 #fff;
+                                text-align: center;
+                                padding: 4px 0px 4px 0px;
+                                margin: 200px 0px 20px 0px;
+                            }}
+                        </style>
+                    </head>
+                    <body>
+                        <div>
+                            {html_steps}
+                        </div>
+                            <h3 class = tips>팁/주의사항</h3>
+                        <p class='tips-section'>
+                        {tips}
+                        </p>
+                    </body>
+                    """, unsafe_allow_html=True)                    
+                else:
+                    st.write('유효한 링크가 없어요')
+            except Exception as e:
+                st.write(f'정보를 가져오는 중 오류가 발생했습니다: {e}')
+        # else:
+        #     st.write('URL이 설정되지 않았습니다.')
+    else:
+        st.write("DataFrame is empty!")

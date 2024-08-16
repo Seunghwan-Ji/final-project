@@ -164,53 +164,49 @@ def change_menu(selected_menu):
 
 # 메인 페이지
 def main_page():
-
     st.image('app_gui/main_icon.png', width=600)
 
     # 첫 화면 아래 설명글 첫번째
-    subtitle = st.markdown("""
-                <style>
-                    .subtitle {
-                        font-size: 29px;
-                        font-family: 'Fira Code';
-                        font-weight: bold;
-                        color: #727421;
-                        background-color: #fdffeb;
-                        border: 10px outset #fdffb2;
-                        text-shadow: 3px  3px 0 #fff;
-                        margin: 50px 0px 50px 0px;
-                        border-radius: 8px;
-                        padding: 10px 0px 10px 0px;
-                        text-align: center;
-                        }
-                </style>
-                <p class=subtitle>
-                    사용하실 메뉴를 선택해 주세요
-                </p>
-                        """, unsafe_allow_html=True)
-
-
-    # # 첫 화면 아래 설명글 두번째
-    explanation = st.markdown("""
-                <style>
-                    .explanation {
-                        font-size: 20px;
-                        color: #727421;
-                        font-weight: bold;
-                        background-color: #fdffeb;
-                        border: 10px outset #fdffb2;
-                        text-shadow: 2px  2px 0 #fff;
-                        font-family: 'Fira Code';
-                        text-align: left;
-                        padding: 10px 40px 10px 40px;
-                        border-radius: 8px;
-                        }
-                </style>
-                <p class=explanation>
-                    카메라: 사용자의 식재료를 카메라로 실시간 인식하여 레시피 추천 <br>
-                    직접 입력: 사용자가 직접 입력하여 레시피 추천<br>
-                    랜덤 추천: 랜덤으로 하나의 레시피 추천 
-                </p>""", unsafe_allow_html=True)
+    st.markdown("""
+        <style>
+            .subtitle {
+                font-size: 29px;
+                font-family: 'Fira Code';
+                font-weight: bold;
+                color: #727421;
+                background-color: #fdffeb;
+                border: 10px outset #fdffb2;
+                text-shadow: 3px  3px 0 #fff;
+                margin: 50px 0px 50px 0px;
+                border-radius: 8px;
+                padding: 10px 0px 10px 0px;
+                text-align: center;
+            }
+        </style>
+        <p class=subtitle>
+            갖고 있는 식재료를 보여주세요!<br>
+            적합한 레시피를 추천해 드리겠습니다.
+        </p>""", unsafe_allow_html=True)
+    
+    # 첫 화면 아래 설명글 두번째
+    st.markdown("""
+        <style>
+            .explanation {
+                font-size: 20px;
+                color: #727421;
+                font-weight: bold;
+                background-color: #fdffeb;
+                border: 10px outset #fdffb2;
+                text-shadow: 2px  2px 0 #fff;
+                font-family: 'Fira Code';
+                text-align: center;  /* 가운데 정렬 */
+                padding: 10px 40px 10px 40px;
+                border-radius: 8px;
+            }
+        </style>
+        <p class=explanation>
+            왼쪽에서 메뉴를 선택하세요.
+        </p>""", unsafe_allow_html=True)
 
 # =========================================================================================================
 # 앱 시작
@@ -240,6 +236,7 @@ background = '''
     }
     </style>
     '''
+
 st.markdown(background, unsafe_allow_html=True)
 
 # 이 모듈이 다른 모듈에 의해 임포트 되지않고 직접 실행되면 아래 함수 실행

@@ -13,8 +13,12 @@ def show_searched_recipe_history_list():
                 border-radius: 8px;
                 margin: 5px 0px 0px 0px;
             }
+            .custom-image {
+                border: 5px inset #fdffb2;
+            }
         </style>
         """, unsafe_allow_html=True)
+    
     st.markdown("""
         <style>
             h1 {
@@ -24,7 +28,6 @@ def show_searched_recipe_history_list():
         </style>
         <h1> 레시피 검색 기록 </h1>
     """, unsafe_allow_html=True)
-    # st.title("레시피 검색 기록")
         
     # 관심 요리 목록이 비어있는지 확인
     if not st.session_state.searched_recipe_history_list:
@@ -44,7 +47,6 @@ def show_searched_recipe_history_list():
             <p class=subheader>
                 검색 기록이 없습니다.
             </p>""", unsafe_allow_html=True)
-        # st.write("검색 기록이 없습니다.")
     else:
         num_columns = 3
         cols = st.columns(num_columns)
