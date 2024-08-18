@@ -44,7 +44,7 @@ def recommend_random_recipe_page():
 
     # '다시 추천' 버튼 추가
     if st.button("다시 추천"):
-        st.session_state.random_recipe = random_recipe() # 새로운 랜덤 레시피 로드
+        st.session_state.random_recipe = search_random_recipe() # 새로운 랜덤 레시피 로드
         if st.session_state.searched_recipe_info:
             st.session_state.hide_searched_recipe_info = True
         
