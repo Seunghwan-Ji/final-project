@@ -15,12 +15,38 @@ def search_recipe_page():
             color: #727421;
             font-size: 25px;
             font-weight: bold;
-            width: 100%;
+            width: 150px;
             height: 50px;
             border: 7px outset #fdffb2;
         }
         
         .stButton>button:hover {
+            background-color: #ffffD3;
+            border: 7px outset #FFFF41;
+        }
+        .st-emotion-cache-1vt4y43.ef3psqc12 {
+            background-color: #fdffeb;
+            color: #727421;
+            font-size: 25px;
+            font-weight: bold;
+            width: 150px;
+            height: 50px;
+            border: 7px outset #fdffb2;
+        }
+        .st-emotion-cache-1vt4y43.ef3psqc12:hover {
+            background-color: #ffffD3;
+            border: 7px outset #FFFF41;
+        }
+        .st-emotion-cache-1cg5da1.ef3psqc12 {
+            background-color: #fdffeb;
+            color: #727421;
+            font-size: 25px;
+            font-weight: bold;
+            width: 150px;
+            height: 50px;
+            border: 7px outset #fdffb2;
+        }
+        .st-emotion-cache-1cg5da1.ef3psqc12:hover {
             background-color: #ffffD3;
             border: 7px outset #FFFF41;
         }
@@ -77,19 +103,19 @@ def search_recipe_page():
     if not st.session_state.include_all_ingredients:
         col1, col2, col3, col4 = st.columns([5, 5, 5, 5])
         with col1:
-            if st.button("재료가 많이 포함된순"):
+            if st.button("재료 포함순", help="재료가 많이 포함된 순서"):
                 st.session_state.recipe_df_sort_by = (None, "재료가 많이 포함된순")
         
         with col2:
-            if st.button("추천순"):
+            if st.button("추천순", help="추천수가 많은 순서"):
                 st.session_state.recipe_df_sort_by = ("추천수", "추천순")
                 
         with col3:
-            if st.button("조회순"):
+            if st.button("조회순", help="조회수가 많은 순서"):
                 st.session_state.recipe_df_sort_by = ("조회수", "조회순")
         
         with col4:
-            if st.button("스크랩순"):
+            if st.button("스크랩순", help="스크랩수가 많은 순서"):
                 st.session_state.recipe_df_sort_by = ("스크랩수", "스크랩순")
     else:
         if st.session_state.recipe_df_sort_by == (None, "재료가 많이 포함된순"):
@@ -97,16 +123,16 @@ def search_recipe_page():
 
         col1, col2, col3 = st.columns([5, 5, 5])
         with col1:
-            if st.button("추천순"):
+            if st.button("추천순", help="추천수가 많은 순서"):
                 st.session_state.recipe_df_sort_by = ("추천수", "추천순")
 
         # 기존 버튼들
         with col2:
-            if st.button("조회순"):
+            if st.button("조회순", help="조회수가 많은 순서"):
                 st.session_state.recipe_df_sort_by = ("조회수", "조회순")
                 
         with col3:
-            if st.button("스크랩순"):
+            if st.button("스크랩순", help="스크랩수가 많은 순서"):
                 st.session_state.recipe_df_sort_by = ("스크랩수", "스크랩순")
 
     if st.session_state.recipe_df_sort_by:
@@ -143,7 +169,7 @@ def check_exist_cookable_recipe():
                     border-radius: 8px;
                     margin: 50px 0px 10px 0px;
                     border: 2px outset #fdffb2;
-                    width: 300px;
+                    width: 500px;
                     }}
             </style>
             <p class=recipe_subheader>
@@ -192,7 +218,8 @@ def search_recipe(recipe_name=None, random_recipe=False):
     if recipe_name:
         st.image("app_gui/random_recipe_icon.png")
 
-        col1, col2 = st.columns([4, 6])
+        col1, col2 = st.columns([3, 7])
+        
         if not random_recipe:
             if col1.button("뒤로 가기"):
                 st.session_state.search_recipe_page = False
@@ -201,6 +228,7 @@ def search_recipe(recipe_name=None, random_recipe=False):
                 st.session_state.recipe_df_selected_name = None
                 st.session_state.recommend_similar_recipe_page = False
                 st.session_state.selected_interested_recipe_number = None
+                st.session_state.recipe_df_selected_number = None
                 
                 if st.session_state.searched_recipe_info: # 검색된 레시피 정보가 있는지 확인
                     st.session_state.searched_recipe_info = None

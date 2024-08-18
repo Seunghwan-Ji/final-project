@@ -46,8 +46,8 @@ def search_random_recipe():
 # 유사한 추천레시피 만들기
 def search_similar_recipe(recipe_number):
     # 특징으로 사용할 열 선택
-    select_columns = ['레시피일련번호', '조회수', '요리명', '요리타입', '음식분위기',
-                        '재료타입', '음식타입', '몇인분', '요리난이도', '요리시간','재료리스트']
+    select_columns = ['요리명', '재료리스트', '조회수', '요리타입', '음식분위기',
+                        '재료타입', '음식타입', '몇인분', '요리난이도', '요리시간', '레시피일련번호']
 
     # 추천 데이터 프레임 만들기
     recommend_df = recipe_df[select_columns]
