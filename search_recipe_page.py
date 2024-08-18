@@ -9,27 +9,13 @@ def search_recipe_page():
     
     # button CSS
     st.markdown("""
-    <style>
-        .stButton > button {
-            background-color: #fdffeb;
-            color: #727421;
-            font-size: 25px;
-            font-weight: bold;
-            width: 150px;
-            height: 50px;
-            border: 7px outset #fdffb2;
-        }
-        
-        .stButton>button:hover {
-            background-color: #ffffD3;
-            border: 7px outset #FFFF41;
-        }
+        <style>
         .st-emotion-cache-1vt4y43.ef3psqc12 {
             background-color: #fdffeb;
             color: #727421;
             font-size: 25px;
             font-weight: bold;
-            width: 150px;
+            width: 100%;
             height: 50px;
             border: 7px outset #fdffb2;
         }
@@ -37,20 +23,6 @@ def search_recipe_page():
             background-color: #ffffD3;
             border: 7px outset #FFFF41;
         }
-        .st-emotion-cache-1cg5da1.ef3psqc12 {
-            background-color: #fdffeb;
-            color: #727421;
-            font-size: 25px;
-            font-weight: bold;
-            width: 150px;
-            height: 50px;
-            border: 7px outset #fdffb2;
-        }
-        .st-emotion-cache-1cg5da1.ef3psqc12:hover {
-            background-color: #ffffD3;
-            border: 7px outset #FFFF41;
-        }
-        
     </style>
     """, unsafe_allow_html=True)
 
@@ -101,7 +73,7 @@ def search_recipe_page():
 
     # 열 정의
     if not st.session_state.include_all_ingredients:
-        col1, col2, col3, col4 = st.columns([5, 5, 5, 5])
+        col1, _, col2, _, col3, _, col4 = st.columns([6, 1.5, 4, 2, 4, 2, 5])
         with col1:
             if st.button("재료 포함순", help="재료가 많이 포함된 순서"):
                 st.session_state.recipe_df_sort_by = (None, "재료가 많이 포함된순")
