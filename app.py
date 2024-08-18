@@ -67,7 +67,7 @@ if 'hide_searched_recipe_info' not in st.session_state:
 
 # 초기 랜덤 레시피 로드
 if 'random_recipe' not in st.session_state:
-    st.session_state.random_recipe = random_recipe()
+    st.session_state.random_recipe = search_random_recipe()
 
 # 관심 요리 리스트
 if 'interested_recipe_list' not in st.session_state:
@@ -88,6 +88,10 @@ if 'recommend_similar_recipe_page' not in st.session_state:
 # "비슷한 레시피 추천 받기" 버튼을 클릭한 레시피의 일련번호
 if 'selected_interested_recipe_number' not in st.session_state:
     st.session_state.selected_interested_recipe_number = None
+
+# 비슷한 레시피 목록 데이터 프레임
+if 'similar_recipe_df' not in st.session_state:
+    st.session_state.similar_recipe_df = None
 
 # 레시피 검색 기록 리스트
 if 'searched_recipe_history_list' not in st.session_state:
@@ -112,11 +116,12 @@ def reset_session_state():
     st.session_state.recipe_df_selected_name = None
     st.session_state.searched_recipe_info = None
     st.session_state.hide_searched_recipe_info = False
-    st.session_state.random_recipe = random_recipe()
+    st.session_state.random_recipe = search_random_recipe()
     st.session_state.load_interested_recipe_page = False
     st.session_state.selected_interested_recipe_name = None
     st.session_state.recommend_similar_recipe_page = False
     st.session_state.selected_interested_recipe_number = None
+    st.session_state.similar_recipe_df = None
 
 # 사이드바 메뉴 & 연결된 페이지
 def run():

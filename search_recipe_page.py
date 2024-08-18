@@ -6,6 +6,7 @@ from Cook import *
 
 def search_recipe_page():
     col1, _ = st.columns([3, 8])
+    
     # button CSS
     st.markdown("""
     <style>
@@ -52,6 +53,8 @@ def search_recipe_page():
         
     </style>
     """, unsafe_allow_html=True)
+
+    back_button = col1.empty()
 
     st.image("app_gui/user.png", width=650)
     
@@ -136,13 +139,12 @@ def search_recipe_page():
         check_exist_cookable_recipe()
 
     if st.session_state.recipe_df_selected_number is None:
-        if col1.button("뒤로 가기"):
+        if back_button.button("뒤로 가기"):
             st.session_state.search_recipe_page = False
             st.session_state.modify_label_page = True
             st.session_state.recipe_df_sort_by = None
             st.experimental_rerun()
-            
-
+  
 def check_exist_cookable_recipe():
     if st.session_state.include_all_ingredients:
         # 모든 재료가 포함된 행 추출
@@ -216,13 +218,17 @@ def search_recipe(recipe_name=None, random_recipe=False):
     if recipe_name:
         st.image("app_gui/random_recipe_icon.png")
 
-        col1, col2 = st.columns([4, 6])
+        col1, col2 = st.columns([3, 7])
+        
         if not random_recipe:
             if col1.button("뒤로 가기"):
                 st.session_state.search_recipe_page = False
                 st.session_state.modify_label_page = True
                 st.session_state.recipe_df_sort_by = None
                 st.session_state.recipe_df_selected_name = None
+                st.session_state.recommend_similar_recipe_page = False
+                st.session_state.selected_interested_recipe_number = None
+                st.session_state.recipe_df_selected_number = None
                 
                 if st.session_state.searched_recipe_info: # 검색된 레시피 정보가 있는지 확인
                     st.session_state.searched_recipe_info = None

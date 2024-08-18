@@ -77,7 +77,6 @@ def show_interested_recipe_list():
                 if st.button("비슷한 레시피 추천 받기", key=f"recommend_{index}", use_container_width=True):
                     st.session_state.recommend_similar_recipe_page = True
                     st.session_state.selected_interested_recipe_number = recipe_number
-                    st.write(f"'{recipe_name}' 와 비슷한 레시피를 추천받는 기능을 여기에 구현하세요.")
                     st.experimental_rerun()
 
                 # 삭제 버튼 추가
