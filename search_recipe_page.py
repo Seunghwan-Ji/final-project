@@ -144,7 +144,7 @@ def search_recipe_page():
             st.session_state.modify_label_page = True
             st.session_state.recipe_df_sort_by = None
             st.experimental_rerun()
-
+  
 def check_exist_cookable_recipe():
     if st.session_state.include_all_ingredients:
         # 모든 재료가 포함된 행 추출
