@@ -89,28 +89,30 @@ def combine_results(*results):
 
     if len(box_groups) > 0:
         for group in box_groups:
-            group_boxes = combined_boxes[group]  # 그룹의 각 번호에 해당하는 박스들의 좌표배열
+            group_boxes = combined_boxes[group]  # 그룹의 각 번호에 해당하는 박스들의 좌표 배열
             group_confidences = combined_confidences[group]  # 그룹의 각 번호에 해당하는 박스들의 신뢰도
-            group_labels = [combined_labels[tuple(box)] for box in group_boxes]  # combined_labels = {(박스 좌표배열) : 라벨이름}
+            group_labels = [combined_labels[tuple(box)] for box in group_boxes]  # 박스 좌표 배열에 따른 라벨 리스트
 
             # 그룹 내에서 평균 박스와 평균 신뢰도를 계산
             avg_box = np.mean(group_boxes, axis=0)
             avg_conf = np.mean(group_confidences)
 
             # 각 박스에 대해 다수결로 레이블 결정
-            flattened_labels = [label for sublist in group_labels for label in sublist]  # 라벨이름들이 저장된 리스트
-            flattened_labels = [label.lower() for label in flattened_labels] # 라벨이름 모두 소문자로 통일
-            print(flattened_labels)
-            labels_counter = Counter(flattened_labels) # 각 라벨의 빈도수 조사
-            max_count = max(labels_counter.values()) # 최빈값
-            most_common_label = [item for item, count in labels_counter.items() if count == max_count] # 최빈값에 해당하는 라벨
+            flattened_labels = [label for sublist in group_labels for label in sublist]  # 라벨 이름들이 저장된 리스트
+            flattened_labels = [label.lower() for label in flattened_labels]  # 라벨 이름을 모두 소문자로 통일
+            labels_counter = Counter(flattened_labels)  # 각 라벨의 빈도수 조사
+            max_count = max(labels_counter.values())  # 최빈값
+            most_common_label = [item for item, count in labels_counter.items() if count == max_count]  # 최빈값에 해당하는 라벨
+            
             # 최빈값이 1보다 크고, 빈도수가 가장 큰 라벨이 한개인 경우
             if max_count > 1 and len(most_common_label) == 1:
+                print("최빈값 라벨 1개 존재")
                 final_boxes.append(avg_box)
                 final_confidences.append(avg_conf)
                 final_labels.append(most_common_label[0])
             # 최빈값이 같은 라벨이 여러 개인 경우, 그 라벨들의 박스끼리만 NMS 적용
             elif max_count > 1 and len(most_common_label) > 1:
+                print("최빈값 라벨 여러개 존재, 신뢰도가 가장 큰 라벨 추출")
                 label_indices = []
                 # 라벨로 박스번호 필터링
                 for label in most_common_label:
@@ -118,20 +120,20 @@ def combine_results(*results):
                         if l == label:
                             label_indices.append(i)
                     
-                label_boxes = group_boxes[label_indices] # 최빈값이 같은 박스들
-                label_confidences = group_confidences[label_indices] # 최빈값이 같은 박스들의 신뢰도
+                label_boxes = group_boxes[label_indices]  # 최빈값이 같은 박스들
+                label_confidences = group_confidences[label_indices]  # 최빈값이 같은 박스들의 신뢰도
                 
-                # NMS 적용
-                indices = nms(torch.tensor(label_boxes), torch.tensor(label_confidences), 0.4)
-                final_boxes.append(label_boxes[indices])
-                final_confidences.append(label_confidences[indices])
-                final_labels.append(flattened_labels[indices])
-            # 라벨의 빈도수가 모두 1일 경우
-            else: # 모두 NMS 적용
-                indices = nms(torch.tensor(group_boxes), torch.tensor(group_confidences), 0.4)
+                # 최빈값에 해당하는 박스끼리만 NMS 적용
+                indices = nms(torch.tensor(label_boxes), torch.tensor(label_confidences), 0.6)
+                final_boxes.append(label_boxes[indices].numpy())
+                final_confidences.append(label_confidences[indices].numpy())
+                final_labels.extend([flattened_labels[i] for i in indices])
+            else: # 라벨의 빈도수가 모두 1일 경우 모두 NMS 적용
+                print("라벨 최빈값이 모두 1, 신뢰도가 가장 큰 라벨 추출")
+                indices = nms(torch.tensor(group_boxes), torch.tensor(group_confidences), 0.6)
                 final_boxes.append(group_boxes[indices])
                 final_confidences.append(group_confidences[indices])
-                final_labels.append(flattened_labels[indices])
+                final_labels.extend([flattened_labels[i] for i in indices])
 
         final_boxes = np.array(final_boxes)
         final_confidences = np.array(final_confidences)

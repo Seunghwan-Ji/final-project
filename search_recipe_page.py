@@ -9,27 +9,13 @@ def search_recipe_page():
     
     # button CSS
     st.markdown("""
-    <style>
-        .stButton > button {
-            background-color: #fdffeb;
-            color: #727421;
-            font-size: 25px;
-            font-weight: bold;
-            width: 150px;
-            height: 50px;
-            border: 7px outset #fdffb2;
-        }
-        
-        .stButton>button:hover {
-            background-color: #ffffD3;
-            border: 7px outset #FFFF41;
-        }
+        <style>
         .st-emotion-cache-1vt4y43.ef3psqc12 {
             background-color: #fdffeb;
             color: #727421;
             font-size: 25px;
             font-weight: bold;
-            width: 150px;
+            width: 100%;
             height: 50px;
             border: 7px outset #fdffb2;
         }
@@ -37,20 +23,6 @@ def search_recipe_page():
             background-color: #ffffD3;
             border: 7px outset #FFFF41;
         }
-        .st-emotion-cache-1cg5da1.ef3psqc12 {
-            background-color: #fdffeb;
-            color: #727421;
-            font-size: 25px;
-            font-weight: bold;
-            width: 150px;
-            height: 50px;
-            border: 7px outset #fdffb2;
-        }
-        .st-emotion-cache-1cg5da1.ef3psqc12:hover {
-            background-color: #ffffD3;
-            border: 7px outset #FFFF41;
-        }
-        
     </style>
     """, unsafe_allow_html=True)
 
@@ -101,7 +73,7 @@ def search_recipe_page():
 
     # 열 정의
     if not st.session_state.include_all_ingredients:
-        col1, col2, col3, col4 = st.columns([5, 5, 5, 5])
+        col1, _, col2, _, col3, _, col4 = st.columns([6, 1.5, 4, 2, 4, 2, 5])
         with col1:
             if st.button("재료 포함순", help="재료가 많이 포함된 순서"):
                 st.session_state.recipe_df_sort_by = (None, "재료가 많이 포함된순")
@@ -144,7 +116,7 @@ def search_recipe_page():
             st.session_state.modify_label_page = True
             st.session_state.recipe_df_sort_by = None
             st.experimental_rerun()
-  
+
 def check_exist_cookable_recipe():
     if st.session_state.include_all_ingredients:
         # 모든 재료가 포함된 행 추출
@@ -199,7 +171,6 @@ def check_exist_cookable_recipe():
         )
 
         selected_row = grid_response['selected_rows'] # 데이터 프레임에서 사용자가 클릭한 행의 정보(df 형태이다.)
-
         if selected_row is not None:
             recipe_number = selected_row['레시피일련번호'].iloc[0]
             recipe_name = selected_row['요리명'].iloc[0]
@@ -289,6 +260,19 @@ def search_result(recipe_name, call_from_history_menu=False):
         st.session_state.searched_recipe_history_list.append(searched_recipe)
     
     if not st.session_state.load_interested_recipe_page or call_from_history_menu:
+        # button CSS
+        st.markdown("""
+        <style>
+            .stButton > button {
+                background-color: #fdffeb;
+                color: #727421;
+                font-size: 25px;
+                font-weight: bold;
+                border: 7px outset #fdffb2;
+            }
+        </style>
+        """, unsafe_allow_html=True)
+
         # "관심 요리 목록에 추가하기" 버튼
         if st.button("관심 요리 목록에 추가하기", use_container_width=True):
             if searched_recipe not in st.session_state.interested_recipe_list:
